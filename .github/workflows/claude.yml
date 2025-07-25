@@ -6,6 +6,10 @@ on:
     types: [created]
   issues:
     types: [opened, assigned]
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
 jobs:
   claude-response:
     runs-on: ubuntu-latest
