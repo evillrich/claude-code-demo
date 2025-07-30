@@ -16,6 +16,8 @@ permissions:
 jobs:
   developer-agent:
     runs-on: ubuntu-latest
+    # Only run if amp-dev1 is actually assigned
+    if: github.event.assignee.login == 'amp-dev1'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,7 +41,3 @@ jobs:
             
             Focus on technical excellence and robust implementations.
             Always provide clear, actionable feedback and well-documented code.
-            
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          OVERRIDE_GITHUB_TOKEN: ${{ secrets.DEVELOPER_GITHUB_TOKEN }}
