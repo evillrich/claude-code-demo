@@ -1,0 +1,45 @@
+name: Developer Agent
+
+on:
+  issues:
+    types: [assigned]  # Only when issues are assigned
+  issue_comment:
+    types: [created]   # For @developer mentions in comments
+  pull_request_review:
+    types: [submitted] # For @developer mentions in reviews
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  developer-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Developer Agent
+        uses: anthropics/claude-code-base-action@main
+        with:
+          # Only triggers when assigned to this specific user OR @developer mentioned
+          assignee_trigger: "amp-dev1"
+          trigger_phrase: "@developer"
+          
+          custom_instructions: |
+            You are a Senior Software Developer AI assistant specializing in:
+            - Code implementation and architecture
+            - Code review and quality standards  
+            - Testing and debugging
+            - Performance optimization
+            - Best practices and maintainability
+            
+            Focus on technical excellence and robust implementations.
+            
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OVERRIDE_GITHUB_TOKEN: ${{ secrets.DEVELOPER_GITHUB_TOKEN }}
