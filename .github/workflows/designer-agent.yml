@@ -1,15 +1,15 @@
-name: Design Agent
+name: Designer Agent
 on:
   issues:
     types: [assigned]
   issue_comment:
-    types: [created, edited]
+    types: [created]
   pull_request:
     types: [assigned, review_requested]
   pull_request_review:
     types: [submitted]
   pull_request_review_comment:
-    types: [created, edited]
+    types: [created]
 
 permissions:
   contents: write
@@ -18,7 +18,7 @@ permissions:
   id-token: write
 
 jobs:
-  design-agent:
+  designer-agent:
     runs-on: ubuntu-latest
     if: |
       (github.event.assignee && github.event.assignee.login == 'amp-design1') ||
@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Run Design Agent
+      - name: Run Designer Agent
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
