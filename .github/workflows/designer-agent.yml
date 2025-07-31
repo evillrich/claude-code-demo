@@ -33,7 +33,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.DESIGNER_GITHUB_TOKEN }}
+          github_token: ${{ secrets.PM_GITHUB_TOKEN }}
           assignee_trigger: "amp-design1"
           trigger_phrase: "@amp-design1"
           allowed_tools: |
