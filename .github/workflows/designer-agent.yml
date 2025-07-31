@@ -1,4 +1,4 @@
-name: Designer Agent
+name: Design Agent
 on:
   issues:
     types: [assigned]
@@ -6,15 +6,24 @@ on:
     types: [created, edited]
   pull_request:
     types: [assigned, review_requested]
+  pull_request_review:
+    types: [submitted]
   pull_request_review_comment:
     types: [created, edited]
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
 jobs:
-  designer-agent:
+  design-agent:
     runs-on: ubuntu-latest
     if: |
       (github.event.assignee && github.event.assignee.login == 'amp-design1') ||
-      contains(github.event.comment.body, '@amp-design1')
+      contains(github.event.comment.body, '@amp-design1') ||
+      contains(github.event.review.body, '@amp-design1')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,7 +33,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.DEVELOPER_GITHUB_TOKEN }}
+          github_token: ${{ secrets.DESIGNER_GITHUB_TOKEN }}
           assignee_trigger: "amp-design1"
           trigger_phrase: "@amp-design1"
           allowed_tools: |
