@@ -1,5 +1,4 @@
 name: Developer Agent
-
 on:
   issues:
     types: [assigned]
@@ -11,22 +10,23 @@ on:
     types: [submitted]
   pull_request_review_comment:
     types: [created]
-
 permissions:
   contents: write
   issues: write
   pull-requests: write
   id-token: write
-
 jobs:
   developer-agent:
     runs-on: ubuntu-latest
+    if: |
+      (github.event.assignee && github.event.assignee.login == 'amp-dev1') ||
+      contains(github.event.comment.body, '@amp-dev1') ||
+      contains(github.event.review.body, '@amp-dev1')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Run Developer Agent
         uses: anthropics/claude-code-action@beta
         with:
