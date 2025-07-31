@@ -1,0 +1,60 @@
+name: Designer Agent
+on:
+  issues:
+    types: [assigned]
+  issue_comment:
+    types: [created, edited]
+  pull_request:
+    types: [assigned, review_requested]
+  pull_request_review_comment:
+    types: [created, edited]
+
+jobs:
+  designer-agent:
+    runs-on: ubuntu-latest
+    if: |
+      (github.event.assignee && github.event.assignee.login == 'amp-design1') ||
+      contains(github.event.comment.body, '@amp-design1')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run Design Agent
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.DEVELOPER_GITHUB_TOKEN }}
+          assignee_trigger: "amp-design1"
+          trigger_phrase: "@amp-design1"
+          allowed_tools: |
+            Read
+            View  
+            Glob
+            Grep
+            LS
+            Bash(git log:*)
+            Bash(git diff:*)
+            Bash(git status:*)
+          disallowed_tools: |
+            Edit
+            Write
+            Replace
+            Bash(git add:*)
+            Bash(git commit:*)
+            Bash(git push:*)
+          custom_instructions: |
+            You are a Senior Software Architect AI assistant in DESIGN MODE ONLY.
+            
+            Your role is to:
+            1. Analyze the issue/request thoroughly by examining the existing codebase
+            2. Create a comprehensive technical design and implementation plan
+            3. Specify exactly which files need to be created/modified and why
+            4. Describe the architecture decisions, patterns, and approach
+            5. Include implementation details, edge cases, and testing considerations
+            6. Post this design as a detailed comment on the issue/PR
+            7. DO NOT make any code changes, commits, or file modifications
+            8. STOP after creating the design document
+            
+            You can only READ and ANALYZE the codebase. You cannot write or modify anything.
+            Create designs that are comprehensive and actionable for implementation.
